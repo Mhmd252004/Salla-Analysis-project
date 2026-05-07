@@ -1,0 +1,5 @@
+relationship eaf1c308-02a8-47e0-9134-1dfe4e353214
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'salla project'.Date
+	toColumn: LocalDateTable_19240331-36d3-4380-98af-58cf3749203e.Date
+

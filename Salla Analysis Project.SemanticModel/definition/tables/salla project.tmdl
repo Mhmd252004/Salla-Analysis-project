@@ -1,0 +1,165 @@
+table 'salla project'
+	lineageTag: 1945d00e-090b-4a63-bfbb-a79d4e37ffd0
+
+	measure 'Handelling Calls Ratio' = ```
+			SUM('salla project'[Calls Handled])/SUM('salla project'[Calls Offered]) 
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 387971bb-7c3c-4eec-ac4d-086176807023
+
+	measure 'Service level' = SUM('salla project'[Calls Handled With in Thrshold])/SUM('salla project'[Calls Offered])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 62886655-611e-4ce9-9994-8e5312ddf8a9
+
+	measure 'Abndonment Rate' = ```
+			SUM('salla project'[Calls Abandon])/SUM('salla project'[Calls Offered]) 
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 46330659-1250-4f08-9252-6b3ae2517ce6
+
+	measure Effiency = ```
+			[Service level]*[Handelling Calls Ratio] 
+			```
+		formatString: 0%;-0%;0%
+		lineageTag: 8908778b-8613-4d92-8ca7-5835a82cdc1c
+
+	column Month
+		dataType: string
+		lineageTag: 49e65b80-ce62-4196-bb6d-7eeec6714c40
+		summarizeBy: none
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column Project
+		dataType: string
+		lineageTag: 245b1c86-03e0-443b-8f9d-d17c89c7c222
+		summarizeBy: none
+		sourceColumn: Project
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 058661fd-2111-4141-a222-bd7054798f71
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: eaf1c308-02a8-47e0-9134-1dfe4e353214
+			defaultHierarchy: LocalDateTable_19240331-36d3-4380-98af-58cf3749203e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Forecasted Calls'
+		dataType: int64
+		formatString: 0
+		lineageTag: f45d10ae-6747-4b0b-be36-237aadc42a4b
+		summarizeBy: sum
+		sourceColumn: Forecasted Calls
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Calls Offered'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0bcd5c0a-3fda-433b-88af-1f4474dbf98c
+		summarizeBy: sum
+		sourceColumn: Calls Offered
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Calls Handled'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1a96b349-38ae-42f7-ae82-add7de54a0cc
+		summarizeBy: sum
+		sourceColumn: Calls Handled
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Calls Handled With in Thrshold'
+		dataType: int64
+		formatString: 0
+		lineageTag: db8f7e27-f4b2-4378-af6d-d540edf2435e
+		summarizeBy: sum
+		sourceColumn: Calls Handled With in Thrshold
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Calls Abandon'
+		dataType: int64
+		formatString: 0
+		lineageTag: 45f50ffe-f41d-4018-806e-eae5bbf0f023
+		summarizeBy: sum
+		sourceColumn: Calls Abandon
+
+		annotation SummarizationSetBy = Automatic
+
+	column ASA
+		dataType: double
+		lineageTag: 82a5fe0a-6819-44c8-b2da-5102760c1e56
+		summarizeBy: sum
+		sourceColumn: ASA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Answer Time'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1142d5d1-0c4d-44aa-b3c4-039a6b3b5a6d
+		summarizeBy: sum
+		sourceColumn: Answer Time
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Agent Name'
+		dataType: string
+		lineageTag: 1802f47a-a148-46d6-b0e9-547327fd0739
+		summarizeBy: none
+		sourceColumn: Agent Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name'
+		dataType: string
+		lineageTag: e88481bf-ef65-4760-94f3-f590465047de
+		summarizeBy: none
+		sourceColumn: Day Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'salla project' = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Ninja Zone\Desktop\Power bi by zanoun\salla project"),
+				    #"Filtered Hidden Files1" = Table.SelectRows(Source, each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File"([Content])),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Invoke Custom Function1", {"Name", "Source.Name"}),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Renamed Columns1", {"Source.Name", "Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"Source.Name", type text}, {"Project", type text}, {"Date", type date}, {"Month", type date}, {"Forecasted Calls", Int64.Type}, {"Calls Offered", Int64.Type}, {"Calls Handled", Int64.Type}, {"Calls Handled With in Thrshold", Int64.Type}, {"Calls Abandon", Int64.Type}, {"ASA", type number}, {"Answer Time", Int64.Type}, {"Agent Name", type text}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each true),
+				    #"Sorted Rows" = Table.Sort(#"Filtered Rows",{{"Source.Name", Order.Ascending}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Sorted Rows","Sallah Call Center Data Base - Feb.csv","Feb",Replacer.ReplaceText,{"Source.Name"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","Sallah Call Center Data Base - Mar .csv","Mar",Replacer.ReplaceText,{"Source.Name"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","Sallah Call Center Data Base -Apr.csv","Apr",Replacer.ReplaceText,{"Source.Name"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Replaced Value2",{"Month"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Source.Name", "Month"}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns",{"Project", "Date", "Month", "Forecasted Calls", "Calls Offered", "Calls Handled", "Calls Handled With in Thrshold", "Calls Abandon", "ASA", "Answer Time", "Agent Name"}),
+				    #"Inserted Day Name" = Table.AddColumn(#"Reordered Columns", "Day Name", each Date.DayOfWeekName([Date]), type text),
+				    #"Reordered Columns1" = Table.ReorderColumns(#"Inserted Day Name",{"Project", "Date", "Day Name", "Month", "Forecasted Calls", "Calls Offered", "Calls Handled", "Calls Handled With in Thrshold", "Calls Abandon", "ASA", "Answer Time", "Agent Name"})
+				in
+				    #"Reordered Columns1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

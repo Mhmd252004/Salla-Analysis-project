@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Salla Analysis Project"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "87f30379-736d-41b0-bdd8-324dfa31d364"
+  }
+}
