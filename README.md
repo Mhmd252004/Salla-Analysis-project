@@ -3,6 +3,9 @@
 ## Project Overview
 This project features a Power BI dashboard designed to analyze and monitor the performance of a call center operating on the Salla platform. The dashboard provides real-time insights into operational efficiency, agent productivity, and service quality.
 
+## Dashboard Preview
+![Salla Call Center Dashboard](project overview.png)
+
 ## Key Performance Indicators (KPIs)
 The dashboard tracks four critical metrics to evaluate call center health:
 * **Handling Ratio:** 98.7%
